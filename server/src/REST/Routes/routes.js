@@ -190,6 +190,7 @@ api.put('/review', (req, res) => {
 // UPDATE END //
 
 // DELETE START //
+// Delete user by id and associat linkes tp reviews and movies
 api.delete('/user', (req, res) => {
     User.findByIdAndDelete(req.query.id).then(removed_user => {
         if (!removed_user) {
@@ -201,7 +202,7 @@ api.delete('/user', (req, res) => {
                 Review.deleteMany({ _id: { $in: review_ids } }).then(() => {
                     res.json({ message: 'User and associated reviews removed succsessfully' })
                 }).catch(error => {
-                    connsole.error('Error occured deleting user revies: ', error);
+                    connsole.error('Error occured deleting user reviews: ', error);
                     res.status(500).json({ error: 'Internal server error' });
                 })
             }).catch(error => {
@@ -215,16 +216,33 @@ api.delete('/user', (req, res) => {
     })
 })
 
+// Delete movie by id and associate linkes to reviews and users 
 api.delete('/movie', (req, res) => {
     Movie.findByIdAndDelete(req.query.id).then(removed_movie => {
         if (!removed_movie) {
             res.status(404).json({ error: ' No such movie' })
         } else {
-            
+            const review_ids = removed_movie.reviews;
+
+            User.updateMany({ reviews: { $in: review_ids } }, { $pull: { reviews: { $in: review_ids } } }).then(() => {
+                Review.deleteMany({ _id: { $in: review_ids } }).then(() => {
+                    res.json({ message: 'Movie and associated reviews removed successfully' })
+                }).catch(error => {
+                    connsole.error('Error occured deleting movie reviews: ', error);
+                    res.status(500).json({ error: 'Internal server error' });
+                })
+            }).catch(error => {
+                console.error('Error deleting user reviews: ', error);
+                res.status(500).json({ error: 'Internal server error' });
+            })
         }
+    }).catch(error => {
+        console.error('Error removing user: ', error);
+        res.status(500).json({ error: 'Internal server error' });
     })
 })
 
+// Deleta reviews by id and associaded linkes to Users and Movies
 api.delete('/review', (req, res) => {
     Review.findByIdAndDelete(req.query.id).then(removed_review => {
         if (!removed_review) {
@@ -245,5 +263,6 @@ api.delete('/review', (req, res) => {
         res.status(500).json({ error: 'Internnal server error' });
     });
 });
+// DETETE END //
 
 module.exports = api;
