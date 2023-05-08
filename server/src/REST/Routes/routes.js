@@ -143,8 +143,53 @@ api.post('/review', (req, res) => {
 // POSTT END //
 
 // UPDATE START //
+// Update user
 api.put('/user', (req, res) => {
-    User.findByIdAndUpdate(req.body.userId)
+    const { firstName, lastName, email } = req.body;
+    User.findByIdAndUpdate(req.query.id, { firstName, lastName, email }, { new : true }).then(updateed_user => {
+        if (!updateed_user) {
+            res.status(404).json({ error: 'User not found' });
+        } else {
+            res.json(updateed_user)
+        }
+    }).catch(error => {
+        console.error('Error occurred whilst trying to update the user: ', error);
+        res.render(500).json({ error: 'Internal server error' });
+    })
+})
+
+// Updatte movie
+api.put('/movie', (req, res) => {
+    const { name, rating, producer } = req.body;
+    Movie.findByIdAndUpdate(req.query.id, { name, rating, producer }, { new : true}).then(updated_movie => {
+        if (!updated_movie) {
+            res.status(404).json({ error: 'movie not found' });
+        } else {
+            res.json(updated_movie);
+        }
+    }).catch(error => {
+        console.error('Error ocurred whilst trying to update the movie: ', error);
+        res.render(500).json({ error: 'Internal server error' });
+    })
+})
+
+// Update review
+api.put('/review', (req, res) => {
+    const { title, description, body } = req.body;
+    Review.findByIdAndUpdate(req.query.id, { title, description, body }, {new : true}).then(updated_review => {
+        if (!updated_review) {
+            res.status(404).json({ error: 'Review not found' });
+        } else {
+            res.json(updated_review);
+        }
+    }).catch(error => {
+        console.error('Error occurred whilst trying to update review: ', error);
+        res.status(500).json({  error: 'Iternal server error' });
+    })
+})
+// UPDATE END //
+api.delete('/user', (req, res) => {
+
 })
 
 
