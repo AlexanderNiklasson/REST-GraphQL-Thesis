@@ -188,9 +188,62 @@ api.put('/review', (req, res) => {
     })
 })
 // UPDATE END //
-api.delete('/user', (req, res) => {
 
+// DELETE START //
+api.delete('/user', (req, res) => {
+    User.findByIdAndDelete(req.query.id).then(removed_user => {
+        if (!removed_user) {
+            res.status(404).json({ error: 'No such user' });
+        } else {
+            const review_ids = removed_user.reviews;
+
+            Movie.updateMany({ reviews: { $in: review_ids } }, { $pull: { reviews: { $in: review_ids } } }).then(() => {
+                Review.deleteMany({ _id: { $in: review_ids } }).then(() => {
+                    res.json({ message: 'User and associated reviews removed succsessfully' })
+                }).catch(error => {
+                    connsole.error('Error occured deleting user revies: ', error);
+                    res.status(500).json({ error: 'Internal server error' });
+                })
+            }).catch(error => {
+                console.error('Error deleting user reviews: ', error);
+                res.status(500).json({ error: 'Internal server error' });
+            })
+        }
+    }).catch(error => {
+        console.error('Error removing user: ', error);
+        res.status(500).json({ error: 'Internal server error' });
+    })
 })
 
+api.delete('/movie', (req, res) => {
+    Movie.findByIdAndDelete(req.query.id).then(removed_movie => {
+        if (!removed_movie) {
+            res.status(404).json({ error: ' No such movie' })
+        } else {
+            
+        }
+    })
+})
+
+api.delete('/review', (req, res) => {
+    Review.findByIdAndDelete(req.query.id).then(removed_review => {
+        if (!removed_review) {
+            res.status(404).json({ error: 'No such review' });
+        } else {
+            // removing all associations
+            Promise.all([
+                User.updateOne({ _id: removed_review.user }, { $pull: { reviews: req.query.id} }), Movie.updateOne({ _id: removed_review.movie } , { $pull: { reviews: req.query.id } })
+            ]).then(() => {
+                res.json({ message: 'Given review has been removed successfully' });
+            }).catch(error => {
+                connsole.error('Error occured trying to remove references: ', error);
+                res.status(500).json({ error: 'internal server error' });
+            })
+        }
+    }).catch(error => {
+        cconsole.error('Error removing review:', error);
+        res.status(500).json({ error: 'Internnal server error' });
+    });
+});
 
 module.exports = api;
