@@ -88,11 +88,15 @@ const resolvers = {
 
                 return {
                     seccsess: true,
-                    message: ''
+                    message: 'Movie and associated reviews removed successfully'
                 }
 
             } catch (error) {
-
+                console.error('Error occured whilst removing a moovie: ', error);
+                return {
+                    succsess: false, 
+                    error: 'Internal server error',
+                }
             }
         },
         addUser: (parent, args) => {
