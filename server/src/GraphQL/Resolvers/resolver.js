@@ -71,6 +71,30 @@ const resolvers = {
                 }
             });
         },
+        deleteMovie: async (parent, { id }, { User, Movie, Review }) => {
+            try {
+                const removed_movie = await Movie.findOneAndUpdate(id);
+                if (!removed_movie) {
+                    return {
+                        succsess: false, 
+                        error: 'No such movie exists',
+                    }
+                }
+
+                const review_ids = removed_movie.reviews;
+                User.updateMany({ reviews: { $in: review_ids } }, { $pull: { reviews: { $in: review_ids } } });
+
+                await Review.deleteMany({ _id: { $in: review_ids } });
+
+                return {
+                    seccsess: true,
+                    message: ''
+                }
+
+            } catch (error) {
+
+            }
+        },
         addUser: (parent, args) => {
             let user = new User({
                 firstName: args.firstName,
@@ -90,6 +114,37 @@ const resolvers = {
                     console.error('Error ocurred whilst trying to update the user:', err)
                 }
             });
+        },
+        deleteUser: async (parent, { id }, { User, Movie, Review }) => {
+           try {
+            const removed_user = await User.findByIdAndDelete(id);
+            if (!removed_user) {
+                return {
+                    succsess: false,
+                    error: 'No such user exists'
+                };
+            }
+
+            const review_ids = removed_user.reviews;
+
+            Movie.updateMany({ reviews: { $in: review_ids } }, { $pull: { reviews: { $in: review_ids } } });
+
+            await Review.deleteMany({ _id: { $in : review_ids } });
+
+            return {
+                succsess: true,
+                message: 'User and associated reviews removed succsessfully',
+            }
+
+            
+           } catch (error) {
+            console.error('Error deleting user: ', error);
+            return {
+                succsess: false,
+                error: ' Internal server error',
+            }
+           }
+            
         },
         addReview: (parent, args) => {
             let review = new Review({
@@ -134,7 +189,8 @@ const resolvers = {
                     console.error('Error ocurred whilst trying to update the review:', err)
                 }
             });
-        }
+        },
+        
     }
 }
 
