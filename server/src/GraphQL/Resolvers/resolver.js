@@ -79,6 +79,18 @@ const resolvers = {
             });
             return user.save();
         },
+        updateUser: (parentt, args) => {
+            if (!args.id) {
+                console.error('CCould not find user, status code 404');
+                return;
+            } 
+            const { firstName, lastName, email} = args.body;
+            return User.findOneAndUpdate({ _id: args.id }, { $set: { firstName, lastName, email } }, { new : true }, (err, User) => {
+                if (err) {
+                    console.error('Error ocurred whilst trying to update the user:', err)
+                }
+            });
+        },
         addReview: (parent, args) => {
             let review = new Review({
                 title: args.title,
@@ -110,6 +122,18 @@ const resolvers = {
                 })
 
 
+        }, 
+        updateReview: (parent, args) => {
+            if (!args.id) {
+                console.error('No such review. status code 404');
+                return;
+            }
+            const { title, description, body } = args.body;
+            Review.findOneAndUpdate({ _id: args.id}, { $set: { title, description, body } }, { new : true}, (err, Review) => {
+                if (err) {
+                    console.error('Error ocurred whilst trying to update the review:', err)
+                }
+            });
         }
     }
 }
