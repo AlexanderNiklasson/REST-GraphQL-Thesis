@@ -34,7 +34,6 @@ async function startServer() {
         })],
     });
 
-
     app.use(bodyParser.json());
     app.use('*', cors());
 
@@ -49,8 +48,5 @@ async function startServer() {
     }, resolve);
     console.log(`GraphQL Server ready at http://localhost:${configGraph.port}`)
 }
-
-
-
 
 module.exports.startServer = startServer;
