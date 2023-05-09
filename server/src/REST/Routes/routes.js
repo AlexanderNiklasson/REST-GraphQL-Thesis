@@ -8,7 +8,7 @@ const Review = require('../../Database/models/review').Reviews;
 
 // GET START //
 // Fetch one user by id
-api.get('/user', (req, res) => {
+api.get('/users', (req, res) => {
     User.findById(req.query.id).populate('reviews').exec().then(user => {
         if (!user) {
             res.status(404).json({ error: 'User not found' });
@@ -29,7 +29,7 @@ api.get('/users', (req, res) => {
 })
 
 // Fetch one movie by id
-api.get('/movie', (req, res) => {
+api.get('/movies', (req, res) => {
     Movie.findById(req.query.id).populate('reviews').exec().then(movie => {
         if (!movie) {
             res.status(404).json({ error: 'Movie not found' });
@@ -50,7 +50,7 @@ api.get('/movies', (req, res) => {
 })
 
 // Fetch a review by id
-api.get('/review', (req, res) => {
+api.get('/reviews', (req, res) => {
     Review.findById(req.query.id).populate('movie').populate('user').exec().then(review => {
         if (!review) {
             res.status(404).json({ error: 'Review not found' });
@@ -73,7 +73,7 @@ api.get('/reviwes', (req, res) => {
 
 // POST START //
 // Create a new user from user input
-api.post('/user', (req, res) => {
+api.post('/users', (req, res) => {
     let new_user = new User({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -88,7 +88,7 @@ api.post('/user', (req, res) => {
 })
 
 // Addinng a new movie to the database
-api.post('/movie', (req, res) => {
+api.post('/movies', (req, res) => {
     let new_movie = new Movie({
         name: req.body.name,
         rating: req.body.rating,
@@ -103,7 +103,7 @@ api.post('/movie', (req, res) => {
 })
 
 // Adding review on movie
-api.post('/review', (req, res) => {
+api.post('/reviews', (req, res) => {
     let new_review = new Review({
         title: req.body.title,
         description: req.body.description,
@@ -144,7 +144,7 @@ api.post('/review', (req, res) => {
 
 // UPDATE START //
 // Update user
-api.put('/user', (req, res) => {
+api.put('/users', (req, res) => {
     const { firstName, lastName, email } = req.body;
     User.findByIdAndUpdate(req.query.id, { firstName, lastName, email }, { new : true }).then(updateed_user => {
         if (!updateed_user) {
@@ -159,7 +159,7 @@ api.put('/user', (req, res) => {
 })
 
 // Updatte movie
-api.put('/movie', (req, res) => {
+api.put('/movies', (req, res) => {
     const { name, rating, producer } = req.body;
     Movie.findByIdAndUpdate(req.query.id, { name, rating, producer }, { new : true}).then(updated_movie => {
         if (!updated_movie) {
@@ -174,7 +174,7 @@ api.put('/movie', (req, res) => {
 })
 
 // Update review
-api.put('/review', (req, res) => {
+api.put('/reviews', (req, res) => {
     const { title, description, body } = req.body;
     Review.findByIdAndUpdate(req.query.id, { title, description, body }, {new : true}).then(updated_review => {
         if (!updated_review) {
@@ -191,7 +191,7 @@ api.put('/review', (req, res) => {
 
 // DELETE START //
 // Delete user by id and associat linkes tp reviews and movies
-api.delete('/user', (req, res) => {
+api.delete('/users', (req, res) => {
     User.findByIdAndDelete(req.query.id).then(removed_user => {
         if (!removed_user) {
             res.status(404).json({ error: 'No such user' });
@@ -217,7 +217,7 @@ api.delete('/user', (req, res) => {
 })
 
 // Delete movie by id and associate linkes to reviews and users 
-api.delete('/movie', (req, res) => {
+api.delete('/movies', (req, res) => {
     Movie.findByIdAndDelete(req.query.id).then(removed_movie => {
         if (!removed_movie) {
             res.status(404).json({ error: ' No such movie' })
@@ -243,7 +243,7 @@ api.delete('/movie', (req, res) => {
 })
 
 // Deleta reviews by id and associaded linkes to Users and Movies
-api.delete('/review', (req, res) => {
+api.delete('/reviews', (req, res) => {
     Review.findByIdAndDelete(req.query.id).then(removed_review => {
         if (!removed_review) {
             res.status(404).json({ error: 'No such review' });
