@@ -126,7 +126,7 @@ app.use((req, res, next) => {
     
         const endTime = performance.now(); // End measuring response time
         const responseTime = endTime - startTime;
-
+        console.log(responseTime)
         return res.send(data);
 
     
