@@ -8,8 +8,8 @@ const Review = require('../../Database/models/review').Reviews;
 
 // GET START //
 // Fetch one user by id
-api.get('/users', (req, res) => {
-    User.findById(req.query.id).populate('reviews').exec().then(user => {
+api.get('/users/:id', (req, res) => {
+    User.findById(req.params.id).populate('reviews').exec().then(user => {
         if (!user) {
             res.status(404).json({ error: 'User not found' });
         } else {
@@ -29,8 +29,8 @@ api.get('/users', (req, res) => {
 })
 
 // Fetch one movie by id
-api.get('/movies', (req, res) => {
-    Movie.findById(req.query.id).populate('reviews').exec().then(movie => {
+api.get('/movies/:id', (req, res) => {
+    Movie.findById(req.params.id).populate('reviews').exec().then(movie => {
         if (!movie) {
             res.status(404).json({ error: 'Movie not found' });
         } else {
@@ -46,12 +46,15 @@ api.get('/movies', (req, res) => {
 api.get('/movies', (req, res) => {
     Movie.find().then(movies => {
         res.json(movies);
+    }).catch(error => {
+        console.log('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     })
 })
 
 // Fetch a review by id
-api.get('/reviews', (req, res) => {
-    Review.findById(req.query.id).populate('movie').populate('user').exec().then(review => {
+api.get('/reviews/:id', (req, res) => {
+    Review.findById(req.params.id).populate('movie').populate('user').exec().then(review => {
         if (!review) {
             res.status(404).json({ error: 'Review not found' });
         } else {
