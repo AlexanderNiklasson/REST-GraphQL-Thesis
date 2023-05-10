@@ -45,6 +45,7 @@ api.get('/movies/:id', (req, res) => {
 // Fetch all movie in db
 api.get('/movies', (req, res) => {
     Movie.find().then(movies => {
+        console.log("movie!!!")
         res.json(movies);
     }).catch(error => {
         console.log('Error:', error);
