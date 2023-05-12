@@ -82,6 +82,13 @@ api.post('/users', (req, res) => {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
+        dateOfBirth: req.body.dateOfBirth,
+        location: req.body.location,
+        favoriteGenre: req.body.favoriteGenre,
+        userDescription: req.body.userDescription,
+        phoneNumber: req.body.phoneNumber,
+
+
     })
     new_user.save().then(saver_user => {
         res.json(saver_user);
@@ -149,8 +156,8 @@ api.post('/reviews', (req, res) => {
 // UPDATE START //
 // Update user
 api.put('/users', (req, res) => {
-    const { firstName, lastName, email } = req.body;
-    User.findByIdAndUpdate(req.query.id, { firstName, lastName, email }, { new : true }).then(updateed_user => {
+    const { firstName, lastName, email, dateOfBirth, location, favoriteGenre, userDescription, phoneNumber } = req.body;
+    User.findByIdAndUpdate(req.query.id, { firstName, lastName, email, dateOfBirth, location, favoriteGenre, userDescription, phoneNumber}, { new: true }).then(updateed_user => {
         if (!updateed_user) {
             res.status(404).json({ error: 'User not found' });
         } else {
@@ -179,8 +186,18 @@ api.put('/movies', (req, res) => {
 
 // Update review
 api.put('/reviews', (req, res) => {
-    const { title, description, body } = req.body;
-    Review.findByIdAndUpdate(req.query.id, { title, description, body }, {new : true}).then(updated_review => {
+    const {
+        title,
+        description,
+        body
+    } = req.body;
+    Review.findByIdAndUpdate(req.query.id, {
+        title,
+        description,
+        body
+    }, {
+        new: true
+    }).then(updated_review => {
         if (!updated_review) {
             res.status(404).json({ error: 'Review not found' });
         } else {

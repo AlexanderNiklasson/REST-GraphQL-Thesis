@@ -108,12 +108,10 @@ app.use((req, res, next) => {
     let oldResponse = res.send;
     res.send = async (data) => {
 
-        /*
         const ramUsed = memoryUsage().heapUsed / 1024 / 1024
         const endUsage = process.cpuUsage();
         var totalUsage = endUsage.user - startUsage.user
-        console.log("CPU USAGE: " + totalUsage + " RAM: "+ ramUsed);
-*/
+
         res.send = oldResponse;
 
         const startTime = performance.now(); // Start measuring response time
