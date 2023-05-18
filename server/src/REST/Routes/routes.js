@@ -172,7 +172,7 @@ api.put('/users', (req, res) => {
 // Updatte movie
 api.put('/movies', (req, res) => {
     const { name, rating, producer } = req.body;
-    Movie.findByIdAndUpdate(req.query.id, { name, rating, producer }, { new : true}).then(updated_movie => {
+    Movie.findByIdAndUpdate(req.query.id, { name, rating, producer }, { new : true }).then(updated_movie => {
         if (!updated_movie) {
             res.status(404).json({ error: 'movie not found' });
         } else {
@@ -186,18 +186,8 @@ api.put('/movies', (req, res) => {
 
 // Update review
 api.put('/reviews', (req, res) => {
-    const {
-        title,
-        description,
-        body
-    } = req.body;
-    Review.findByIdAndUpdate(req.query.id, {
-        title,
-        description,
-        body
-    }, {
-        new: true
-    }).then(updated_review => {
+    const { title, description, body } = req.body;
+    Review.findByIdAndUpdate(req.query.id, { title, description, body }, { new: true }).then(updated_review => {
         if (!updated_review) {
             res.status(404).json({ error: 'Review not found' });
         } else {
